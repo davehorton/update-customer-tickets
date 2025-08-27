@@ -5,13 +5,22 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Check for required environment variables
+if (!process.env.NOTION_TOKEN || !process.env.SUPPORT_ENGAGEMENTS_DB) {
+  console.log('Error: Missing required environment variables.');
+  console.log('Please ensure your .env file contains:');
+  console.log('  NOTION_TOKEN=your_notion_integration_token');
+  console.log('  SUPPORT_ENGAGEMENTS_DB=your_support_engagements_database_id');
+  process.exit(1);
+}
+
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function debugDatabase() {
   try {
     // Query the Support Engagements database
     const response = await notion.databases.query({
-      database_id: '257f2e46-adcf-8003-8cf3-cf5d3acf2285',
+      database_id: process.env.SUPPORT_ENGAGEMENTS_DB,
       page_size: 5
     });
 
@@ -59,7 +68,7 @@ async function debugDatabase() {
     // Also check the database structure
     console.log('\n=== Database Structure ===\n');
     const db = await notion.databases.retrieve({
-      database_id: '257f2e46-adcf-8003-8cf3-cf5d3acf2285'
+      database_id: process.env.SUPPORT_ENGAGEMENTS_DB
     });
     
     console.log('Database Title:', db.title?.[0]?.plain_text || 'No title');

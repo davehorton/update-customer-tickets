@@ -6,13 +6,22 @@ import chalk from 'chalk';
 
 dotenv.config();
 
+// Check for required environment variables
+if (!process.env.NOTION_TOKEN || !process.env.SUPPORT_TICKETS_DB) {
+  console.log(chalk.red('Error: Missing required environment variables.'));
+  console.log(chalk.yellow('Please ensure your .env file contains:'));
+  console.log(chalk.cyan('  NOTION_TOKEN=your_notion_integration_token'));
+  console.log(chalk.cyan('  SUPPORT_TICKETS_DB=your_support_tickets_database_id'));
+  process.exit(1);
+}
+
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function findDatabase() {
   try {
     // Get the Support Tickets database
     const db = await notion.databases.retrieve({
-      database_id: '25bf2e46-adcf-81d4-a165-fb26b1adb3c0'
+      database_id: process.env.SUPPORT_TICKETS_DB
     });
 
     console.log(chalk.green.bold('Support Tickets Database Location:'));

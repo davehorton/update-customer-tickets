@@ -15,8 +15,18 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-const TICKETS_DB_ID = '25bf2e46-adcf-81d4-a165-fb26b1adb3c0';
-const ENGAGEMENTS_DB_ID = '257f2e46-adcf-8003-8cf3-cf5d3acf2285';
+// Check for required environment variables
+if (!process.env.NOTION_TOKEN || !process.env.SUPPORT_TICKETS_DB || !process.env.SUPPORT_ENGAGEMENTS_DB) {
+  console.log(chalk.red('Error: Missing required environment variables.'));
+  console.log(chalk.yellow('Please ensure your .env file contains:'));
+  console.log(chalk.cyan('  NOTION_TOKEN=your_notion_integration_token'));
+  console.log(chalk.cyan('  SUPPORT_TICKETS_DB=your_support_tickets_database_id'));
+  console.log(chalk.cyan('  SUPPORT_ENGAGEMENTS_DB=your_support_engagements_database_id'));
+  process.exit(1);
+}
+
+const TICKETS_DB_ID = process.env.SUPPORT_TICKETS_DB;
+const ENGAGEMENTS_DB_ID = process.env.SUPPORT_ENGAGEMENTS_DB;
 
 // Helper function to find customer by name
 async function findCustomerByName(name) {

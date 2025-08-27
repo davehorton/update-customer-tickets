@@ -10,10 +10,10 @@ dotenv.config();
 
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
-const FRESHDESK_API_KEY = 'e43006zmskEJubAezbr9';
-const FRESHDESK_DOMAIN = 'jambonz.freshdesk.com';
-const SUPPORT_ENGAGEMENTS_DB = '257f2e46-adcf-8003-8cf3-cf5d3acf2285';
-const SUPPORT_TICKETS_DB = '25bf2e46-adcf-80ed-821a-dfd100c4c0ef';
+const FRESHDESK_API_KEY = process.env.FRESHDESK_API_KEY;
+const FRESHDESK_DOMAIN = process.env.FRESHDESK_DOMAIN;
+const SUPPORT_ENGAGEMENTS_DB = process.env.SUPPORT_ENGAGEMENTS_DB;
+const SUPPORT_TICKETS_DB = process.env.SUPPORT_TICKETS_DB;
 
 // Initialize Notion client
 const notion = new Client({ auth: NOTION_TOKEN });
@@ -377,6 +377,18 @@ async function syncFreshDeskTickets() {
     console.error(chalk.red('Error:'), error.message);
     process.exit(1);
   }
+}
+
+// Check for required environment variables
+if (!NOTION_TOKEN || !FRESHDESK_API_KEY || !FRESHDESK_DOMAIN || !SUPPORT_ENGAGEMENTS_DB || !SUPPORT_TICKETS_DB) {
+  console.log(chalk.red('Error: Missing required environment variables.'));
+  console.log(chalk.yellow('Please ensure your .env file contains:'));
+  console.log(chalk.cyan('  NOTION_TOKEN=your_notion_integration_token'));
+  console.log(chalk.cyan('  FRESHDESK_API_KEY=your_freshdesk_api_key'));
+  console.log(chalk.cyan('  FRESHDESK_DOMAIN=your_domain.freshdesk.com'));
+  console.log(chalk.cyan('  SUPPORT_ENGAGEMENTS_DB=your_support_engagements_database_id'));
+  console.log(chalk.cyan('  SUPPORT_TICKETS_DB=your_support_tickets_database_id'));
+  process.exit(1);
 }
 
 // Run the sync
